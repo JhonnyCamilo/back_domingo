@@ -4,12 +4,18 @@
  */
 package tutoria.domingo.servicios;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tutoria.domingo.modelo.Reservacion;
 import tutoria.domingo.repositorio.RepositorioReservacion;
+import tutoria.domingo.reto5.CantidadReservas;
+import tutoria.domingo.reto5.ContadorCliente;
 
 /**
  *
@@ -71,6 +77,33 @@ public class ServiciosReservacion {
             return true;
         }).orElse(false);
         return aBoolean;
+    }
+    public List<ContadorCliente> getTopClients(){
+        return metodosCrud.getTopClients();
+    }
+
+    public List<Reservacion> getReservationsPeriod(String dateA, String dateB){
+        SimpleDateFormat parser=new SimpleDateFormat("yyyy-MM-dd");
+        Date a= new Date();
+        Date b=new Date();
+        try {
+            a = parser.parse(dateA);
+            b = parser.parse(dateB);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(a.before(b)){
+            return metodosCrud.getReservationPeriod(a,b);
+        }else{
+            return new ArrayList<>();
+        }
+
+    }
+    public CantidadReservas getReservationsStatusReport(){
+        List<Reservacion>completed=metodosCrud.getReservationsByStatus("completed");
+        List<Reservacion>cancelled=metodosCrud.getReservationsByStatus("cancelled");
+        return new CantidadReservas(completed.size(),cancelled.size());
+
     }
     
 }

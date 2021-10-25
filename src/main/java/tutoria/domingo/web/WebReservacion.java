@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import tutoria.domingo.modelo.Reservacion;
+import tutoria.domingo.reto5.CantidadReservas;
+import tutoria.domingo.reto5.ContadorCliente;
 import tutoria.domingo.servicios.ServiciosReservacion;
 
 /**
@@ -56,5 +58,24 @@ public class WebReservacion {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean delete(@PathVariable("id") int reservationId) {
         return servicio.deleteReservation(reservationId);
+    }
+    
+     @GetMapping("/report-clients")
+    public List<ContadorCliente> getReservationsReportClient(){
+        return servicio.getTopClients();
+}
+
+    @GetMapping("/report-dates/{dateOne}/{dateTwo}")
+    public List<Reservacion> getReservationsReportDates(@PathVariable("dateOne") String dateOne,@PathVariable("dateTwo") String dateTwo){
+        return servicio.getReservationsPeriod(dateOne,dateTwo);
+    }
+    @GetMapping("/report-dates/amount/{dateOne}/{dateTwo}")
+    public Integer getReservationsReportDatesAmount(@PathVariable("dateOne") String dateOne,@PathVariable("dateTwo") String dateTwo){
+        return servicio.getReservationsPeriod(dateOne,dateTwo).size();
+    }
+
+    @GetMapping("/report-status")
+    public CantidadReservas getReservationsStatusReport(){
+        return servicio.getReservationsStatusReport();
     }
 }
